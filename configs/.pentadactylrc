@@ -1,0 +1,309 @@
+"-----------------------------------------
+" ~/.pentadactylc - Pentadactyl config file
+"-----------------------------------------
+
+" Disable smooth scroll,
+set scrollsteps=1
+set scrolltime=0
+
+" Load plugins
+loadplugins
+
+" Load userstyles
+source ~/.pentadactyl/styles/styles.js
+styledisable -name global
+so ~/.pentadactyl/styles/nakkaya.css
+
+colorscheme molokai
+
+" Faster Scrolling,
+map -b j 8j
+map -b k 8k
+map -b h 8h
+map -b l 8l
+
+" Use Full Zoom,
+map -b zi ZI
+map -b zo ZO
+
+map -modes=n ga -builtin <C-^>
+
+" Use characters for hints,
+set hintkeys=asdflkjghnvuc
+" hi -a Hint font-size: 9pt !important;
+" hi -a Hint font-size: 9pt
+
+highlight Hint       font-size: 14px; background: rgba(210,1,133,0.7) !important; border: 0px solid rgb(165,1,105); padding: 1px; border-radius: 3px; font-weight: bold; margin-left: -15px; color: white; font-family: Helvetica; line-height:1em;
+highlight HintActive background: rgba(145,197,43,0.8)    !important;
+highlight HintElem   background: rgba(255, 209, 20, 0.7) !important;
+highlight StatusLine -moz-appearance: none !important; font-weight: bold; background: transparent !important; border: 0px !important; min-height: 22px !important; text-shadow: none !important; font: normal 14px/1 'Menlo' !important; padding: 3px 0px 3px 5px !important;
+highlight CmdLine    padding: 1px !important; font: normal 14px 'Menlo' !important;
+highlight CmdOutput  font: normal 13px 'Menlo' !important;
+highlight CompItem   font: normal 13px 'Menlo' !important;
+
+highlight Find   background: #d6c149; color: #000;
+
+set guioptions=bCrsm
+
+" gvim is the default
+set editor="subl -w"
+
+" Show pattern matches as you type
+set incfind
+
+" Highlight previous search pattern matches,
+set hlfind
+
+" Ignore case in search unless pattern has uppercase chars,
+set findcase=smart
+
+" default search engine
+set defsearch=duckduckgo
+
+set visualbell
+
+" open all commands in a new tab
+set newtab=all
+" set showstatuslinks=2
+" set showtabline=multitab
+
+set wildmode=list:longest,list:full
+"set wildoptions=auto
+
+" Unfocus textfields
+set strictfocus
+
+set strictfocus=google.com:laissez-faire,'chrome:*':laissez-faire,*:despotic
+
+set hlfind
+
+" Vim editing in textareas
+"set noinsertmode
+
+" buftabs option
+"let g:buftabs_showCurrentUrl = 1
+" Show/hide the buftabbar
+"nmap <silent> <A-u> :set invbuftabs<CR>
+
+" RSS icon in statusbar
+" javascript <<EOF
+" (function(){
+"    var feedPanel = document.createElement("statusbarpanel");
+"    feedPanel.setAttribute("id", "feed-panel-clone");
+"    feedPanel.appendChild(document.getElementById("feed-button"));
+"    feedPanel.firstChild.setAttribute("style", "padding: 0; max-height: 16px;");
+"    document.getElementById("status-bar")
+"            .insertBefore(feedPanel, document.getElementById("security-button"));
+" })();
+" EOF
+
+" {{{ Quickmarks / Bookmarks
+" Quickmarks
+delqm!
+source ~/.pentadactyl/qmarks
+
+" Bookmarks
+"source ~/.pentadactyl/bookmarks
+" }}}
+
+" Commands {{{
+
+command! -description 'vk.com instant messages' vk    tabopen https://vk.com/im
+command! -description 'newsblur feed' nb    tabopen https://newsblur.com
+command! -description 'gmail' gm    tabopen https://mail.google.com
+command! -description 'leprosorium' leprosorium    tabopen https://leprosorium.ru/
+command! -description 'msmail' msmail    tabopen https://mail-1a.cloudmail.microsoft.com/owa
+command! -description 'Trello.com com tasks' tr    tabopen https://trello.com
+
+command! -description 'duck ssl'     -nargs=* d     tabopen https://duckduckgo.com/?q=<args>&v=
+command! -description 'google ssl'   -nargs=* g     tabopen https://encrypted.google.com/#q=<args>
+command! -description 'scroogle ssl' -nargs=* s     tabopen https://ssl.scroogle.org/cgi-bin/nbbwssl.cgi?Gw=<args>
+
+command! -nargs=1 wpr   tabopen http://ru.wikipedia.org/wiki/<args>
+command! -nargs=* wprs  tabopen http://ru.wikipedia.org/wiki/Special:Search?search=<args>&go=Go&fulltext=search
+command! -nargs=1 wpe   tabopen http://en.wikipedia.org/wiki/<args>
+command! -nargs=* wpes  tabopen http://en.wikipedia.org/wiki/Special:Search?search=<args>&go=Go&fulltext=search
+command! -nargs=* dict  tabopen http://ru.wiktionary.org/wiki/<args>
+
+command! -description 'trans en2ru' -nargs=* wr2ru tabopen http://www.wordreference.com/enru/<args>
+command! -description 'trans ru2en' -nargs=* wr2en tabopen http://www.wordreference.com/ruen/<args>
+command! -description 'Slovari.yandex.ru trans ru2en' -nargs=* ys tabopen http://slovari.yandex.ru/<args>/en/
+
+" :autocmd LocationChange .* -js modes.reset()
+" :autocmd LocationChange webmail\.gandi\.net -js modes.set(modes.PASS_THROUGH)
+autocmd LocationChange feedhq.org :normal! <C-z>
+":autocmd LocationChange mail\.google\.com -js modes.set(modes.PASS_THROUGH)
+":autocmd LocationChange google(\.(com|ru)\/(reader|calendar)) js modes.passAllKeys = true
+set passkeys+=mail.google.com:jk<CR>
+set passkeys+=linux.org.ru:jk<CR>
+set passkeys+=mail-3b.cloudmail.microsoft.com:jk<CR>
+
+" Set the Vim filetype to "mail" when editing mail in GMail with the external editor:
+":autocmd LocationChange .* :set editor=gvim\ -f
+":autocmd LocationChange mail\.google\.com :set editor="gvim -f -c 'set ft=mail'"
+
+"Pour « [[ » et « ]] » permet de les faire fonctionner en Français
+set nextpattern=\bnext|Next|suivant|Suivant\b,^>$,^(>>|»)$,^(>|»),(>|»)$,\bmore\b
+set previouspattern=\bprev|previous|Previous|précédent|Précédent\b,^<$,^(<<|«)$,^(<|«),(<|«)$
+
+" }}}
+
+" Keys {{{
+
+map <leader>n -silent :bnext<CR>
+map <leader>m -silent :bprev<CR>
+map <C-right> -silent :bnext<CR>
+map <C-left> -silent :bprev<CR>
+
+javascript <<EOF
+     dactyl.mulSearch = function () {
+         let selection = content.getSelection().toString();
+         dactyl.execute(":tabopen wikipedia-en " + selection);
+     };
+EOF
+
+map s -js dactyl.mulSearch();
+
+" Cyrillic mapping
+nmap Ж :
+" yank
+nmap ю .
+nmap Ю >
+nmap . /
+nmap , ?
+nmap э '
+nmap Э "
+nmap ь m
+nmap Ь M
+nmap Н Y
+nmap н y
+nmap з p
+nmap З P
+nmap ф a
+nmap щ o
+nmap Щ O
+nmap о j
+nmap О J
+nmap р h
+nmap Р H
+nmap л k
+nmap Л K
+nmap д l
+nmap Д L
+nmap ж ;
+nmap ф a
+nmap Ф A
+nmap ы s
+nmap Ы S
+nmap в d
+nmap В D
+nmap а f
+nmap А F
+nmap п g
+nmap П G
+nmap й q
+nmap Й Q
+nmap ц w
+nmap Ц W
+nmap у e
+nmap У E
+nmap к r
+nmap К R
+nmap е t
+nmap Е T
+nmap я z
+nmap Я Z
+nmap ч x
+nmap Ч X
+nmap с c
+nmap С C
+nmap м v
+nmap М V
+nmap и b
+nmap И B
+nmap т n
+nmap Т N
+nmap ь m
+nmap Ь M
+
+map <leader>t -silent :tabopen about:newtab<CR>
+
+" Show/hide toolbars
+map <F9> :set go+=mT<CR>
+map <F10> :set go-=mT<CR>
+
+" contrast plugin
+map <C-j> :contrast 10<CR>
+map <C-k> :contrast -10<CR>
+
+" restart pentadactyl
+map <C-r> :restart<CR>
+
+map <C-b> <C-v><C-b>
+map <A-a> :dialog addbookmark<CR>
+" map <A-b> :dialog bookmarks<CR>
+
+" Toggle userstyles/userscripts
+nmap <silent> ,s :styletoggle!<CR>:styledisable -name global<CR>
+nmap <silent> ,h :styletoggle -name global<CR>
+nmap <silent> ,S :loaduserstyles<CR>:styledisable -name global<CR>
+nmap <silent> ,g :gmset!<CR>
+
+map -modes=n,v <C-F6> y:!~/bin/supergenpass<Space>'<S-Insert>'<Return><Esc>2gi<S-Insert><Return>
+map -modes=i <C-F6> <Esc><C-F6>
+
+" Faster scrolling
+map -builtin <C-e> 3<C-e>
+map -builtin <C-y> 3<C-y>
+"nmap <BS> <Space>
+"nmap <S-BS> <S-Space>
+
+map -builtin h 5h
+map -builtin j 5j
+map -builtin k 5k
+map -builtin l 5l
+
+map -builtin J 2j
+map -builtin K 2k
+
+"map -builtin s f
+"map -builtin S F
+"map -builtin e d
+"map -builtin ;s g;b
+"map -builtin ;t ;y
+"map -builtin ;n ;i
+"map -builtin ;N ;I
+
+" Video control keys
+nmap <silent> <leader>p :stplay<CR>
+nmap <silent> <leader>P :stpause<CR>
+nmap <silent> <leader>l :stlarge<CR>
+nmap <silent> <leader>m :stmute<CR>
+
+" }}}
+
+" Hints {{{
+
+js <<EOF
+hints.addMode("in", "Focus to input",
+    function(element) element.focus(),
+    function() "//input[not(@type='hidden')] | //textarea | //xhtml:input[not(@type='hidden')] | //xhtml:textarea"
+    );
+
+hints.addMode("h", "Hide element",
+    function(element) {
+        element.style.display = "none";
+    },
+    function() "//*");
+EOF
+
+" }}}
+
+
+inoremap <C-l> <Insert>
+
+
+nmap <silent> cr :set spelllang=ru<CR>
+nmap <silent> ce :set spelllang=en-US<CR>
+
+autocmd LocationChange vk.com set ht-=a.span.left_count_pad
