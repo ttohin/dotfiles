@@ -11,7 +11,6 @@ loadplugins
 
 " Load userstyles
 source ~/.pentadactyl/styles/styles.js
-styledisable -name global
 so ~/.pentadactyl/styles/nakkaya.css
 
 colorscheme molokai
@@ -43,7 +42,7 @@ highlight CompItem   font: normal 13px 'Menlo' !important;
 
 highlight Find   background: #d6c149; color: #000;
 
-set guioptions=bCrsm
+set guioptions=bCrsmn
 
 " gvim is the default
 set editor="subl -w"
@@ -56,11 +55,10 @@ set hlfind
 
 " Ignore case in search unless pattern has uppercase chars,
 set findcase=smart
+set smartcase
 
 " default search engine
 set defsearch=duckduckgo
-
-set visualbell
 
 " open all commands in a new tab
 set newtab=all
@@ -158,11 +156,19 @@ map <C-left> -silent :bprev<CR>
 javascript <<EOF
      dactyl.mulSearch = function () {
          let selection = content.getSelection().toString();
-         dactyl.execute(":tabopen wikipedia-en " + selection);
+         dactyl.execute(":tabopen http://www.multitran.ru/c/m.exe?s=" + selection);
      };
 EOF
 
-map s -js dactyl.mulSearch();
+javascript <<EOF
+     dactyl.wikiSearch = function () {
+         let selection = content.getSelection().toString();
+         dactyl.execute(":tabopen duckduckgo wikipedia ru " + selection);
+     };
+EOF
+
+map <C-m> -js dactyl.mulSearch();
+map <C-w> -js dactyl.wikiSearch();
 
 " Cyrillic mapping
 nmap Ж :
@@ -302,6 +308,9 @@ EOF
 
 inoremap <C-l> <Insert>
 
+" Trello.com
+" not mapping l
+set passkeys+=trello.com:@#^acdfxqvns?<><space><left><right><up><down><Esc><cr>
 
 nmap <silent> cr :set spelllang=ru<CR>
 nmap <silent> ce :set spelllang=en-US<CR>
