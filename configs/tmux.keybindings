@@ -1,0 +1,88 @@
+# vim: set ft=tmux:
+unbind-key -a
+set -g prefix   C-a
+
+bind        C-o rotate-window
+bind        C-z suspend-client
+bind      Space next-layout
+bind          ! break-pane
+bind        '"' split-window -c "#{pane_current_path}"
+bind        '#' list-buffers
+bind        '$' command-prompt -I "#S" "rename-session '%%'"
+bind          % split-window -h
+bind          k kill-window
+bind        "'" command-prompt -p index "select-window -t ':%%'"
+bind          ( switch-client -p
+bind          ) switch-client -n
+bind          , command-prompt -I "#W" "rename-window '%%'"
+bind          - delete-buffer
+bind          . command-prompt "move-window -t '%%'"
+bind          0 select-window -t :0
+bind          1 select-window -t :1
+bind          2 select-window -t :2
+bind          3 select-window -t :3
+bind          4 select-window -t :4
+bind          5 select-window -t :5
+bind          6 select-window -t :6
+bind          7 select-window -t :7
+bind          8 select-window -t :8
+bind          9 select-window -t :9
+bind          : command-prompt
+bind          = choose-buffer
+bind          ? list-keys
+bind          D choose-client
+bind          L switch-client -l
+bind          [ copy-mode
+bind          ] paste-buffer
+bind          c new-window -c "#{pane_current_path}"
+bind          d detach-client
+bind          f command-prompt "find-window '%%'"
+bind          i display-message
+bind          m last-window
+bind -n     M-n next-window
+bind -n     M-p previous-window
+bind          o select-pane -t :.+
+bind          q display-panes
+bind          r refresh-client
+bind          s choose-tree
+bind          t clock-mode
+bind          w choose-window
+bind        M-x confirm-before -p "kill-pane #P? (y/n)" kill-pane
+bind        C-k kill-session
+bind          z resize-pane -Z
+bind          { swap-pane -U
+bind          } swap-pane -D
+bind      PPage copy-mode -u
+bind -n     M-k select-pane -U
+bind -n     M-j select-pane -D
+bind -n     M-h select-pane -L
+bind -n     M-l select-pane -R
+bind        M-1 select-layout even-horizontal
+bind        M-2 select-layout even-vertical
+bind        M-3 select-layout main-horizontal
+bind        M-4 select-layout main-vertical
+bind        M-5 select-layout tiled
+bind        M-n next-window -a
+bind        M-o rotate-window -D
+bind        M-p previous-window -a
+bind -r     M-k resize-pane -U 5
+bind -r     M-j resize-pane -D 5
+bind -r     M-h resize-pane -L 5
+bind -r     M-l resize-pane -R 5
+bind -r     C-k resize-pane -U
+bind -r     C-j resize-pane -D
+bind -r     C-h resize-pane -L
+bind -r     C-l resize-pane -R
+
+bind R source-file ~/.tmux.conf \; display-message "Config reloaded!".
+
+# Setup 'v' to begin selection as in Vim
+bind -t vi-copy v begin-selection
+bind -t vi-copy y copy-pipe "reattach-to-user-namespace pbcopy"
+
+# Update default binding of `Enter` to also use copy-pipe
+unbind -t vi-copy Enter
+bind -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
+
+bind b set-option status
+
