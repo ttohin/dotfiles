@@ -66,7 +66,6 @@ NeoBundle "derekwyatt/vim-fswitch"
 NeoBundle "Lokaltog/vim-easymotion"
 NeoBundle "kien/rainbow_parentheses.vim"
 NeoBundle "freitass/todo.txt-vim"
-" NeoBundle 'edkolev/tmuxline.vim'
 call neobundle#end()
 filetype plugin indent on
 NeoBundleCheck
@@ -236,6 +235,9 @@ au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
+
+command! JsonPrettyPrint %!python -m json.tool<CR>
+
 " Rename tabs to show tab number.
 " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
 if exists("+showtabline")
@@ -321,7 +323,7 @@ nnoremap <silent> <Leader>id :ImplementDefinition<CR>
 if executable('ag')
   " Use ack in unite grep source.
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  let g:unite_source_grep_default_opts = '-i --vimgrep --hidden --ignore ''.git'''
   let g:unite_source_grep_recursive_opt = ''
 endif
 
