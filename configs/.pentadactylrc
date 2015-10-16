@@ -125,7 +125,8 @@ command! -nargs=* dict  tabopen http://ru.wiktionary.org/wiki/<args>
 
 command! -description 'trans en2ru' -nargs=* wr2ru tabopen http://www.wordreference.com/enru/<args>
 command! -description 'trans ru2en' -nargs=* wr2en tabopen http://www.wordreference.com/ruen/<args>
-command! -description 'Slovari.yandex.ru trans ru2en' -nargs=* ys tabopen http://slovari.yandex.ru/<args>/en/
+command! -description 'translate with slovari.yandex.ru' -nargs=* ys tabopen http://slovari.yandex.ru/<args>/en/
+command! -description 'translate with multitran' -nargs=* mt tabopen http://www.multitran.ru/c/m.exe?s=<args>
 
 " :autocmd LocationChange .* -js modes.reset()
 " :autocmd LocationChange webmail\.gandi\.net -js modes.set(modes.PASS_THROUGH)
@@ -310,9 +311,9 @@ inoremap <C-l> <Insert>
 
 " Trello.com
 " not mapping l
-set passkeys+=trello.com:@#^acdfxqvns?<><space><left><right><up><down><Esc><cr>
+set passkeys+=trello.com:@#^acfxqvns?<><space><left><right><up><down><Esc><cr>
 
 nmap <silent> cr :set spelllang=ru<CR>
 nmap <silent> ce :set spelllang=en-US<CR>
 
-autocmd LocationChange vk.com set ht-=a.span.left_count_pad
+
