@@ -9,8 +9,8 @@ bind          ! break-pane
 bind        '"' split-window -c "#{pane_current_path}"
 bind        '#' list-buffers
 bind        '$' command-prompt -I "#S" "rename-session '%%'"
-bind          % split-window -h
-bind          k kill-window
+bind          v split-window -h -c "#{pane_current_path}"
+bind          q kill-window
 bind        "'" command-prompt -p index "select-window -t ':%%'"
 bind          ( switch-client -p
 bind          ) switch-client -n
@@ -42,7 +42,7 @@ bind          m last-window
 bind -n     M-n next-window
 bind -n     M-p previous-window
 bind          o select-pane -t :.+
-bind          q display-panes
+bind          k display-panes
 bind          r refresh-client
 bind          s choose-tree
 bind          t clock-mode
@@ -82,7 +82,7 @@ bind -t vi-copy y copy-pipe "reattach-to-user-namespace pbcopy"
 
 # Update default binding of `Enter` to also use copy-pipe
 unbind -t vi-copy Enter
-bind -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
+bind-key -t vi-copy Enter copy-pipe pbcopy
 
 bind b set-option status
 
