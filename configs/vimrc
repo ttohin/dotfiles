@@ -15,6 +15,7 @@ set autoread
 set undolevels=100
 " list of character encodings considered when starting to edit an existing file
 set fileencodings=utf-8
+
 " share clipboard among instances
 set clipboard=unnamed
 set modelines=1
@@ -41,9 +42,11 @@ NeoBundle 'Shougo/vimproc', {
       \   }
       \}
 NeoBundle "regedarek/ZoomWin"
-NeoBundle "Shougo/unite.vim"
+NeoBundle "JamshedVesuna/vim-markdown-preview"
+NeoBundle "Shougo/denite.nvim"
 NeoBundle "airblade/vim-gitgutter"
 NeoBundle "dahu/Insertlessly"
+NeoBundle "critiqjo/lldb.nvim"
 NeoBundle "scrooloose/syntastic"
 NeoBundle "scrooloose/nerdtree"
 NeoBundle 'Valloric/YouCompleteMe', {
@@ -59,6 +62,7 @@ NeoBundle "elzr/vim-json"
 NeoBundle "ervandew/supertab"
 NeoBundle "wakatime/vim-wakatime"
 NeoBundle "morhetz/gruvbox"
+NeoBundle "w0ng/vim-hybrid"
 NeoBundle "octol/vim-cpp-enhanced-highlight"
 NeoBundle "tpope/vim-fugitive"
 NeoBundle "chrisbra/vim-diff-enhanced"
@@ -66,6 +70,7 @@ NeoBundle "derekwyatt/vim-fswitch"
 NeoBundle "Lokaltog/vim-easymotion"
 NeoBundle "kien/rainbow_parentheses.vim"
 NeoBundle "freitass/todo.txt-vim"
+NeoBundle 'JuliaEditorSupport/julia-vim'
 call neobundle#end()
 filetype plugin indent on
 NeoBundleCheck
@@ -88,8 +93,10 @@ set showmatch
 set ignorecase
 " Ignore case when the pattern contains lowercase letters only.
 set smartcase
-let g:hybrid_use_Xresources = 1
+" let g:hybrid_custom_term_colors = 1
+" let g:hybrid_reduced_contrast = 1
 " colorscheme hybrid
+let g:gruvbox_contrast_dark='soft'
 colorscheme gruvbox
 set cursorcolumn
 set cursorline
@@ -121,10 +128,10 @@ set report=0
 set lazyredraw
 " Nice-looking vertical separator
 set fillchars=vert:│
-" Cyrillic mapping
-set langmap=ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
+set autowrite
 " }}}
 " Misc settings ------------------- {{{
+let vim_markdown_preview_github=1
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
@@ -235,8 +242,7 @@ au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
-
-command! JsonPrettyPrint %!python -m json.tool<CR>
+command! JsonPrettyPrint python -m json.tool<CR>
 
 " Rename tabs to show tab number.
 " (Based on http://stackoverflow.com/questions/5927952/whats-implementation-of-vims-default-tabline-function)
@@ -283,6 +289,24 @@ if exists("+showtabline")
     set showtabline=1
     highlight link TabNum Special
 endif
+
+" vim -b : edit binary using xxd-format!
+augroup Binary
+  au!
+  au BufReadPre  *.bin,*.o,*.a let &bin=1
+  au BufReadPost *.bin,*.o,*.a if &bin | %!xxd
+  au BufReadPost *.bin,*.o,*.a set ft=xxd | endif
+  au BufWritePre *.bin,*.o,*.a if &bin | %!xxd -r
+  au BufWritePre *.bin,*.o,*.a endif
+  au BufWritePost *.bin,*.o,*.a if &bin | %!xxd
+  au BufWritePost *.bin,*.o,*.a set nomod | endif
+augroup END
+
+set keymap=russian-jcukenwin
+set iminsert=0
+set imsearch=0
+highlight lCursor guifg=NONE guibg=Cyan
+
 " }}} "
 " Key mapping settings ------------ {{{
 let mapleader = ","
@@ -312,6 +336,9 @@ nmap <Leader>q :qa!<CR>
 noremap <Leader>wc :ZoomWin<CR>
 "Toggle .h/.cpp file
 nnoremap <silent> <Leader>h :FSSplitLeft<CR>
+nnoremap tt :tabedit<CR>
+
+nmap <Leader>jp :%! python -m json.tool<CR>
 
 nmap s <Plug>(easymotion-s2)
 
@@ -319,55 +346,58 @@ nnoremap <silent> <Leader>cd :CopyDefinition<CR>
 nnoremap <silent> <Leader>id :ImplementDefinition<CR>
 
 " }}}
-" Unite --------- {{{
+" Denite --------- {{{
 if executable('ag')
-  " Use ack in unite grep source.
-  let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '-i --vimgrep --hidden --ignore ''.git'''
-  let g:unite_source_grep_recursive_opt = ''
+
+	" Ag command on grep source
+	call denite#custom#var('grep', 'command', ['ag'])
+	call denite#custom#var('grep', 'default_opts',
+			\ ['-i', '--vimgrep'])
+	call denite#custom#var('grep', 'recursive_opts', [])
+	call denite#custom#var('grep', 'pattern_opt', [])
+	call denite#custom#var('grep', 'separator', ['--'])
+	call denite#custom#var('grep', 'final_opts', [])
 endif
 
-let g:unite_source_history_yank_enable = 1
-nnoremap <Leader>f :Unite -buffer-name=search -start-insert line<cr>
-nnoremap <Leader>F :Unite grep:.<cr>
-nnoremap <silent> <leader>t :Unite -toggle -auto-resize -buffer-name=files file_rec/async:!<cr>
-nnoremap <leader>y :<C-u>Unite -auto-resize -toggle -buffer-name=yank    history/yank<cr>
-nnoremap <leader>e :<C-u>Unite -auto-resize -toggle -buffer-name=buffer  buffer<cr>
+nnoremap <Leader>f :Denite -auto-resize line<cr>
+nnoremap <Leader>F :Denite -auto-resize grep<cr>
+nnoremap <silent> <leader>t :Denite -reversed -auto-resize -buffer-name=files file_rec<cr>
 
-let g:unite_candidate_icon = '-'
-let g:unite_marked_icon = '+'
-let g:unite_enable_start_insert = 1
-let g:unite_split_rule = "botright"
-let g:unite_force_overwrite_statusline = 0
-let g:unite_winheight = 10
+if !exists('g:denite_custom_ignores')
+  let g:denite_custom_ignores = []
+endif
 
 if !exists('g:unite_ignores')
-  let g:unite_ignores = []
+  let g:unite_ignores= []
 endif
 
-let g:unite_ignores += ['\.git']
+let g:denite_ignores =
+      \ [ '.git/', '*.a', '*.o',
+      \   '*~']
 
-call unite#custom#source('file_rec,file_rec/async,file_mru,file,buffer,grep',
-      \ 'ignore_pattern', unite#get_all_sources('file_rec')['ignore_pattern'] .
-      \ join(g:unite_ignores, '\|'))
+let g:denite_ignores = extend(g:denite_ignores, g:denite_custom_ignores)
+let g:denite_ignores = extend(g:denite_ignores, g:unite_ignores)
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
+call denite#custom#source('file_rec', 'matchers', ['matcher_fuzzy', 'matcher_ignore_globs'])
+" call denite#custom#source('file_rec', 'matchers', ['matcher_fuzzy'])
+call denite#custom#filter('matcher_ignore_globs', 'ignore_globs', g:denite_ignores)
+call denite#custom#filter('file_rec', 'min_cache_files', 2000)
 
-" sort file results by length
-call unite#custom#source('file', 'sorters', 'sorter_length')
-call unite#custom#source('file_rec/async', 'sorters', 'sorter_length')
+call denite#custom#source(
+	\ 'file_rec', 'sorters', ['sorter_rank'])
 
-function! s:unite_settings()
-  let b:SuperTabDisabled=1
-  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-  map <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-  map <silent><buffer> <ESC> <Plug>(unite_exit)
-  imap <silent><buffer><expr> <C-v> unite#do_action('split')
-endfunction
-
-autocmd FileType unite call s:unite_settings()
+call denite#custom#map(
+          \ 'insert',
+          \ '<C-j>',
+          \ '<denite:move_to_next_line>',
+          \ 'noremap'
+          \)
+call denite#custom#map(
+            \ 'insert',
+            \ '<C-k>',
+            \ '<denite:move_to_previous_line>',
+            \ 'noremap'
+            \)
 " }}}
 " Vimscript file settings ---------- {{{
 augroup filetype_vim
@@ -388,10 +418,16 @@ let g:ycm_key_list_select_completion=[]
 let g:ycm_key_list_previous_completion=[]
 let g:ycm_cache_omnifunc = 1
 set completeopt-=preview
+let g:ycm_filetype_whitelist = {
+      \ 'cpp': 1,
+      \ 'c': 1,
+      \ 'python': 1,
+      \ }
 let g:ycm_filetype_blacklist = {
       \ 'markdown' : 1,
       \ 'unite' : 1,
       \ 'text' : 1,
-      \ 'log' : 0
+      \ 'json' : 1,
+      \ 'log' : 1
       \ }
 " }}}
