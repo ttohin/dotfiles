@@ -1,0 +1,22 @@
+# Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+
+# Report CPU usage for commands running longer than 10 seconds
+REPORTTIME=10
+
+plugins=(oh-my-zsh-bootstrap git git-flow dirhistory)
+
+# User configuration
+
+source $ZSH/oh-my-zsh.sh
+
+export PROMPT_COMMAND='echo -ne "\033]0;\007"'
+
+alias rf="rm -rf"
+alias g="git"
+alias t="tig"
+alias ta="tig --all"
+alias v="vim"
+
+export EDITOR='vim'
+

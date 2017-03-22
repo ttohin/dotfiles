@@ -1,0 +1,34 @@
+[user]
+	name = Anton Simakov
+	email = ttohin@gmail.com
+[alias]
+	st = status
+	ci = commit
+	co = checkout
+	br = branch
+	di = diff
+	fl = flow
+	fe = fetch
+	su = submodule update
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	pmf = pull --rebase
+	pushu = push -u origin
+	fclean = clean -xdf
+
+[push]
+	default = simple
+[diff]
+	tool = vimdiff
+[difftool "diffmerge"]
+	cmd = diffmerge \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = vimdiff
+[mergetool "diffmerge"]
+	cmd = "diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$(if test -f \"$BASE\"; then echo \"$BASE\"; else echo \"$LOCAL\"; fi)\" \"$REMOTE\""
+	trustExitCode = true
+[difftool]
+	prompt = false
+[fetch]
+	prune = true
+[credential]
+	helper = osxkeychain
