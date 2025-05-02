@@ -1,0 +1,63 @@
+type: Microsoft.ContainerInstance/containerGroups
+apiVersion: 2022-09-01
+location: Germany West Central
+name: valheimserver
+properties:
+  osType: Linux
+  volumes:
+  - name: valheim-server-data
+    azureFile:
+      shareName: valheimroot 
+      storageAccountName: valheimgwc
+      storageAccountKey: o7BEMZG7MznXyTeIWYUJZttzcJqqwwYTyQW5a8GH5ryFF0u8Env1aWqDeuWRe+GTeNOdT9dvWGud040GQlm7tA==
+  ipAddress:
+    type: Public
+    dnsNameLabel: ruvalheim
+    ports:
+      - port: 2456
+        protocol: udp
+      - port: 2457
+        protocol: udp
+      - port: 2458
+        protocol: udp
+      - port: 9001
+        protocol: tcp
+  containers:
+    - name: valheimserver
+      properties:
+        image: ghcr.io/lloesche/valheim-server:latest
+        environmentVariables:
+          - name: SERVER_NAME
+            value: Darkrain
+          - name: WORLD_NAME
+            value: Darkrain
+          - name: SERVER_PASS
+            value: 44860_eed
+          - name: VALHEIM_PLUS
+            value: false
+          - name: SUPERVISOR_HTTP
+            value: true
+          - name: SUPERVISOR_HTTP_PASS
+            value: 44860_eed
+          - name: STATUS_HTTP
+            value: true
+          - name: SERVER_PUBLIC
+            value: true
+          - name: BEPINEX
+            value: true
+        ports:
+          - port: 2456
+            protocol: udp
+          - port: 2457
+            protocol: udp
+          - port: 2458
+            protocol: udp
+          - port: 9001
+            protocol: tcp
+        resources:
+          requests:
+            cpu: 2
+            memoryInGb: 4
+        volumeMounts:
+          - name: valheim-server-data
+            mountPath: /config
